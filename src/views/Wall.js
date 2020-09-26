@@ -1,17 +1,29 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Container, Grid } from '@material-ui/core';
 import IdeaCard from 'components/molecules/IdeaCard';
 import { connect } from 'react-redux';
+import { routes } from 'routes';
 import { compose } from 'redux';
 import { firestoreConnect } from 'react-redux-firebase';
-import { routes } from 'routes';
 import Nav from 'components/organizms/Nav';
-import firebase from 'config/fbConfig';
+import AddComment from 'components/organizms/AddComment';
 
-const Wall = ({ ideas, uid, rest }) =>
-  // const user = firebase.auth().currentUser;
-  // console.log(user)
-  (
+const Wall = ({ ideas, uid, match }) => {
+  const [open, setOpen] = useState(false);
+  const [openId, setOpenId] = useState('');
+  const [openContent, setOpenContent] = useState('');
+
+  const handleClickOpen = (id, content) => {
+    setOpen(true);
+    setOpenId(id);
+    setOpenContent(content);
+  };
+
+  const handleClickClose = () => {
+    setOpen(false);
+  };
+
+  return (
     <Nav>
       <Container maxWidth="xl">
         <Grid
@@ -30,14 +42,18 @@ const Wall = ({ ideas, uid, rest }) =>
                   content={content}
                   authorName={authorName}
                   authorMail={authorMail}
+                  handleClickOpen={handleClickOpen}
                 />
               </Grid>
             ))
           }
         </Grid>
       </Container>
+      {open && <AddComment id={openId} content={openContent} handleClickClose={handleClickClose} />}
     </Nav>
   );
+};
+
 const mapStateToProps = (state) => ({
   uid: state.firebase.auth.uid,
   ideas: state.firestore.ordered.ideas,

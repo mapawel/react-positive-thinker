@@ -8,6 +8,7 @@ import {
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import AddCommentIcon from '@material-ui/icons/AddComment';
 import { connect } from 'react-redux';
 import { deleteIdea } from 'actions/ideaActions';
 import { routes } from 'routes';
@@ -35,7 +36,6 @@ const useStyles = makeStyles((theme) => ({
   },
   expand: {
     transform: 'rotate(0deg)',
-    marginLeft: 'auto',
     transition: theme.transitions.create('transform', {
       duration: theme.transitions.duration.shortest,
     }),
@@ -43,10 +43,13 @@ const useStyles = makeStyles((theme) => ({
   expandOpen: {
     transform: 'rotate(180deg)',
   },
+  commentIcon: {
+    marginLeft: 'auto',
+  },
 }));
 
 const IdeaCard = ({
-  deleteIdeaFn, match, authorName = '', date, authorMail, id, content,
+  deleteIdeaFn, match, authorName = '', date, authorMail, id, content, handleClickOpen
 }) => {
   const CapitalizeName = authorName.slice(0, 1).toUpperCase() + authorName.slice(1);
   const nameInitial = authorName.slice(0, 1).toUpperCase();
@@ -91,6 +94,13 @@ const IdeaCard = ({
         </Typography>
       </CardContent>
       <CardActions disableSpacing>
+        <IconButton
+          className={classes.commentIcon}
+          onClick={() => handleClickOpen(id, content)}
+          aria-label="add comment"
+        >
+          <AddCommentIcon />
+        </IconButton>
         <IconButton
           className={clsx(classes.expand, {
             [classes.expandOpen]: expanded,
