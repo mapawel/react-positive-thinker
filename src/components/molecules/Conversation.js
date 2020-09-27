@@ -17,20 +17,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const conv = [
-  'Lorem ipsum dolor sit amet consectetur adipisicing elit. Repudiandae minus, itaque illum illo, ut explicabo voluptatem id cum eum dicta vitae error minima mollitia, debitis quo praesentium maxime harum velit?Nihil quisquam libero consequatur nemo nesciunt illo reiciendis, eum, tempore vel laborum aliquid, accusamus unde at rem vero aliquam cumque hic ipsa? Numquam eos necessitatibus, a facere cupiditate rerum minus.',
-  'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Dolor sunt laudantium eos quod officia, ut quidem numquam voluptatum officiis obcaecati?',
-  'Lorem ipsum dolor, sit amet consectetur adipisicing elit.',
-  'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quam laborum consequuntur rerum eligendi, dolorem maxime.',
-];
 
-function Conversation() {
+function Conversation({ comments }) {
   const classes = useStyles();
 
   return (
     <div className={classes.root}>
-      {conv.map((con, index) => (
-        <ConversationItem key={index} con={con} />
+      {comments.map(({ id, comment, commentAuthorMail, commentAuthorName, commentDate, isCommentingAutor }) => (
+        <ConversationItem key={id} comment={comment} commentAuthorMail={commentAuthorMail} commentAuthorName={commentAuthorName} commentDate={commentDate} isCommentingAutor={isCommentingAutor} />
       ))}
 
     </div>

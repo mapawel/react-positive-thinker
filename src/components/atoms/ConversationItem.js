@@ -10,16 +10,11 @@ import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({
-  list: {
-    width: '95%',
-    backgroundColor: theme.palette.background.paper,
+  avatar: {
+    backgroundColor: theme.palette.secondary.main,
   },
-  inline: {
-    display: 'inline',
-  },
-  listItemText: {
-    display: 'flex',
-    alignItems: 'center',
+  avatarAuthor: {
+    backgroundColor: theme.palette.primary.main,
   },
   box: {
     padding: theme.spacing(2),
@@ -27,21 +22,28 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ConversationItem = ({ con }) => {
+const ConversationItem = ({
+  comment, commentAuthorMail, commentAuthorName, isCommentingAutor,
+}) => {
   const classes = useStyles();
   const [expanded, setExpanded] = useState(true);
   return (
     <Box
       onClick={() => setExpanded(!expanded)}
       className={classes.box}
-      style={expanded ? {maxWidth: '60vw'} : null}
+      style={expanded ? { maxWidth: '60vw' } : null}
     >
-      <Grid container wrap="nowrap" spacing={2}>
-        <Grid item>
-          <Avatar>W</Avatar>
+      <Grid container direction="column" wrap="nowrap" spacing={0}>
+        <Grid item container direction="row" wrap="nowrap" spacing={2} alignItems="center">
+          <Grid item>
+            <Avatar className={isCommentingAutor ? classes.avatarAuthor : null}>{commentAuthorName.slice(0, 1).toUpperCase()}</Avatar>
+          </Grid>
+          <Grid item>
+            <Typography variant="body2">{`${commentAuthorMail} ${isCommentingAutor && ' <- author'}`}</Typography>
+          </Grid>
         </Grid>
-        <Grid item zeroMinWidth>
-          <Typography noWrap={expanded}>{con}</Typography>
+        <Grid item zeroMinWidth style={{ marginLeft: '55px' }}>
+          <Typography noWrap={expanded}>{comment}</Typography>
         </Grid>
       </Grid>
     </Box>
