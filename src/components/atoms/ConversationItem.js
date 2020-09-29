@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import moment from 'moment';
 import {
   Card, CardHeader, CardContent, CardActions, Avatar, IconButton, Typography, Grid, Box,
 } from '@material-ui/core';
@@ -20,10 +21,13 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(2),
     cursor: 'pointer',
   },
+  commentHeaderTxt: {
+    color: theme.palette.primary.dark,
+  },
 }));
 
 const ConversationItem = ({
-  comment, commentAuthorMail, commentAuthorName, isCommentingAutor,
+  comment, commentAuthorMail, commentAuthorName, isCommentingAutor, commentDate,
 }) => {
   const classes = useStyles();
   const [expanded, setExpanded] = useState(true);
@@ -38,8 +42,13 @@ const ConversationItem = ({
           <Grid item>
             <Avatar className={isCommentingAutor ? classes.avatarAuthor : null}>{commentAuthorName.slice(0, 1).toUpperCase()}</Avatar>
           </Grid>
-          <Grid item>
-            <Typography variant="body2">{`${commentAuthorMail} ${isCommentingAutor && ' <- author'}`}</Typography>
+          <Grid className={classes.commentHeaderTxt} item container direction="column" spacing={0} alignItems="flex-start">
+            <Grid item>
+              <Typography variant="caption">{`${commentAuthorMail} ${isCommentingAutor && ' <- author'}`}</Typography>
+            </Grid>
+            <Grid item>
+              <Typography variant="caption">{moment(commentDate.toDate()).calendar()}</Typography>
+            </Grid>
           </Grid>
         </Grid>
         <Grid item zeroMinWidth style={{ marginLeft: '55px' }}>

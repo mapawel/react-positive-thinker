@@ -1,71 +1,92 @@
-import React, { Component } from 'react';
+import React from 'react';
 import {
-  FormControl, Grid, Container, Box,
+  Grid, Container, Box, Typography,
 } from '@material-ui/core';
-import InputLabel from '@material-ui/core/InputLabel';
-import OutlinedInput from '@material-ui/core/OutlinedInput';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import { connect } from 'react-redux';
 import { addIdea } from 'actions/ideaActions';
+import Nav from 'components/organizms/Nav';
+import { Formik } from 'formik';
+import { schemaAddPost } from 'validators/validatorSchema';
 
-class NewIdea extends Component {
-  state = {
-    title: '',
-    content: '',
-  }
-
-  handleInputChange = (e) => {
-    this.setState({
-      [e.target.id]: e.target.value,
-    });
-  }
-
-  handleSubbmit = (e) => {
-    const { addIdeaFn, history: { goBack } } = this.props;
-    e.preventDefault();
-    addIdeaFn(this.state);
-    goBack();
-  }
-
-  render() {
-    const { title, content } = this.state;
-    return (
-      <Container maxWidth="xl">
-        <Grid
-          container
-          justify="center"
-          alignItems="center"
-          style={{ minHeight: '60vh' }}
-        >
-          <Grid item xs={12} md={6}>
-            <form noValidate autoComplete="off">
-              <FormControl fullWidth variant="outlined">
-                <InputLabel htmlFor="title">title</InputLabel>
-                <OutlinedInput id="title" type="text" onChange={this.handleInputChange} value={title} label="title" />
-              </FormControl>
-              <Box my={2}>
-                <TextField
-                  fullWidth
-                  id="content"
-                  label="Your Idea"
-                  multiline
-                  rows={4}
-                  value={content}
-                  onChange={this.handleInputChange}
-                  variant="outlined"
-                />
-              </Box>
-              <Button fullWidth variant="contained" color="primary" type="subbit" onClick={this.handleSubbmit}>
-                Add Idea
-              </Button>
-            </form>
-          </Grid>
+const NewIdea = ({ addIdeaFn, history: { goBack } }) => (
+  <Nav>
+    <Container maxWidth="xl">
+      <Grid
+        container
+        justify="center"
+        alignItems="center"
+        style={{ minHeight: '60vh' }}
+      >
+        <Grid item xs={12} md={6}>
+          <Formik
+            initialValues={{ content: '' }}
+            validationSchema={schemaAddPost}
+            onSubmit={
+              (values, { setSubmitting }) => {
+                addIdeaFn(values);
+                setTimeout(() => {
+                  setSubmitting(false);
+                  goBack();
+                }, 200);
+              }
+            }
+          >
+            {({
+              values,
+              handleChange,
+              handleSubmit,
+              isSubmitting,
+              errors,
+              touched,
+            }) => {
+              let isError = false;
+              if (errors.content) isError = true;
+              const handleEnter = (e) => {
+                e.key === 'Enter' && handleSubmit();
+              };
+              return (
+                <form
+                  onSubmit={(e) => e.preventDefault()}
+                  noValidate
+                  autoComplete="off"
+                >
+                  <Box mb={2}>
+                    <TextField
+                      error={isError}
+                      required
+                      fullWidth
+                      id="content"
+                      label="Your Idea"
+                      multiline
+                      rows={4}
+                      value={values.content}
+                      onChange={handleChange}
+                      onKeyUp={(e) => handleEnter(e)}
+                      variant="outlined"
+                    />
+                    {errors.content && <Typography variant="caption">{errors.content}</Typography>}
+                  </Box>
+                  <Button
+                    fullWidth
+                    variant="contained"
+                    color="primary"
+                    type="subbmit"
+                    onClick={handleSubmit}
+                    disabled={isSubmitting}
+                  >
+                    Add Idea
+                  </Button>
+                </form>
+              );
+            }}
+          </Formik>
         </Grid>
-      </Container>
-    );
-  }
-}
+      </Grid>
+    </Container>
+  </Nav>
+);
 
 const mapDispatchToProps = (dispatch) => ({
   addIdeaFn: (idea) => dispatch(addIdea(idea)),

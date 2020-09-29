@@ -25,6 +25,57 @@ export const addIdea = (idea) => (dispatch, getState, { getFirebase }) => {
     });
 };
 
+export const addLike = (likedPostId) => async (dispatch, getState, { getFirebase }) => {
+  const firestore = getFirebase().firestore();
+  const user = firebase.auth().currentUser;
+  const likedDoc = await firestore.collection('ideas').doc(likedPostId).get()
+  const likeArr = likedDoc.data().like ? likedDoc.data().like : [];
+
+  firestore
+    .collection('ideas')
+    .doc(likedPostId)
+    .update({
+      like: [...likeArr, user.uid],
+    })
+    .then(() => {
+      dispatch({
+        type: 'ADD_LIKE',
+      });
+    })
+    .catch((err) => {
+      dispatch({
+        type: 'ADD_LIKE_ERROR',
+        payload: err,
+      });
+    });
+};
+
+export const removeLike = (likedPostId) => async (dispatch, getState, { getFirebase }) => {
+  const firestore = getFirebase().firestore();
+  const user = firebase.auth().currentUser;
+  const likedDoc = await firestore.collection('ideas').doc(likedPostId).get()
+  const likeArr = likedDoc.data().like ? likedDoc.data().like : [];
+  const newLikeArr = likeArr.filter(el => el !== user.uid)
+
+  firestore
+    .collection('ideas')
+    .doc(likedPostId)
+    .update({
+      like: [...newLikeArr],
+    })
+    .then(() => {
+      dispatch({
+        type: 'REMOVE_LIKE',
+      });
+    })
+    .catch((err) => {
+      dispatch({
+        type: 'REMOVE_LIKE_ERROR',
+        payload: err,
+      });
+    });
+};
+
 export const addComment = (commentedId, comment) => async (dispatch, getState, { getFirebase }) => {
   const firestore = getFirebase().firestore();
   const user = firebase.auth().currentUser;

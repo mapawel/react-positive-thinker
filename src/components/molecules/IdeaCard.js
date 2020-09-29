@@ -11,6 +11,8 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import AddCommentIcon from '@material-ui/icons/AddComment';
 import { connect } from 'react-redux';
 import { deleteIdea } from 'actions/ideaActions';
+import { removeLike } from 'actions/ideaActions';
+import { addLike } from 'actions/ideaActions';
 import { routes } from 'routes';
 import { withRouter } from 'react-router-dom';
 import Conversation from 'components/molecules/Conversation';
@@ -52,19 +54,32 @@ const useStyles = makeStyles((theme) => ({
   commentsNumber: {
     cursor: 'pointer',
   },
+  likeIcon: {
+    color: theme.palette.secondary.main,
+  },
+  likeIconActive: {
+    color: theme.palette.primary.main,
+  },
 }));
 
 const IdeaCard = ({
-  deleteIdeaFn, match, authorName = '', date, authorMail, id, content, handleClickOpen,
+  deleteIdeaFn, match, authorName = '', date, like = [], authorMail, id, content, handleClickOpen, addLikeFn, removeLikeFn, uid
 }) => {
-  const CapitalizeName = authorName.slice(0, 1).toUpperCase() + authorName.slice(1);
-  const nameInitial = authorName.slice(0, 1).toUpperCase();
   const classes = useStyles();
   const [expanded, setExpanded] = React.useState(false);
   const [comments, setComments] = React.useState([]);
+  const CapitalizeName = authorName.slice(0, 1).toUpperCase() + authorName.slice(1);
+  const nameInitial = authorName.slice(0, 1).toUpperCase();
+  const likeCount = like.length;
+  const isUserLike = like.includes(uid)
 
   const handleDelete = () => {
     deleteIdeaFn(id);
+  };
+
+  const handleLike = () => {
+    if (like.includes(uid)) removeLikeFn(id);
+    else addLikeFn(id);
   };
 
   const handleExpandClick = () => {
@@ -93,9 +108,10 @@ const IdeaCard = ({
         subheader={moment(date.toDate()).calendar()}
         action={(
           <CardActions disableSpacing>
-            <IconButton aria-label="add to favorites">
-              <FavoriteIcon color="secondary" />
+            <IconButton aria-label="add to favorites" onClick={handleLike} >
+              <FavoriteIcon className={isUserLike ? classes.likeIconActive : classes.likeIcon} />
             </IconButton>
+            {likeCount !== 0 ? <Typography>{likeCount}</Typography> : null}
             {match.path === routes.ideas && (
               <IconButton aria-label="delete" onClick={handleDelete}>
                 <DeleteForeverIcon color="secondary" />
@@ -155,8 +171,14 @@ const IdeaCard = ({
   );
 };
 
-const mapDispatchToProps = (dispatch) => ({
-  deleteIdeaFn: (id) => dispatch(deleteIdea(id)),
+const mapStateToProps = (state) => ({
+  uid: state.firebase.auth.uid,
 });
 
-export default connect(null, mapDispatchToProps)(withRouter(IdeaCard));
+const mapDispatchToProps = (dispatch) => ({
+  deleteIdeaFn: (id) => dispatch(deleteIdea(id)),
+  addLikeFn: (likedPostId) => dispatch(addLike(likedPostId)),
+  removeLikeFn: (likedPostId) => dispatch(removeLike(likedPostId)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(IdeaCard));

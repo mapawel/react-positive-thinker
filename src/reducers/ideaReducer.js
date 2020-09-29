@@ -8,6 +8,18 @@ const ideaReducer = (state = {}, { type, payload }) => {
       case 'ADD_IDEA_ERROR':
       toast.error("There is a problem with adding... :(")
       return state;
+    case 'ADD_LIKE':
+      toast.success("You like this post! :)")
+      return state;
+      case 'ADD_LIKE_ERROR':
+      toast.error("There is a problem with adding a like... :(")
+      return state;
+    case 'REMOVE_LIKE':
+      toast.success("You dislike this post!")
+      return state;
+      case 'REMOVE_LIKE_ERROR':
+      toast.error("There is a problem with removing a like... :(")
+      return state;
     case 'COMMENT_IDEA':
       toast.success("Your comment has been added")
       return state;

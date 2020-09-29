@@ -43,13 +43,13 @@ const Wall = ({ uid, match }) => {
         >
           {
             ideas && ideas.map(({
-              id, date, title, content, authorName = '', authorMail,
+              id, date, like, content, authorName = '', authorMail,
             }) => (
               <Grid item key={id} xs={12} md={6}>
                 <IdeaCard
                   id={id}
                   date={date}
-                  title={title}
+                  like={like}
                   content={content}
                   authorName={authorName}
                   authorMail={authorMail}
