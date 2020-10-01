@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import clsx from 'clsx';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 import {
   Drawer, AppBar, Toolbar, List, IconButton, Typography, Avatar,
 } from '@material-ui/core';
@@ -76,7 +77,6 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     justifyContent: 'flex-end',
     padding: theme.spacing(0, 1),
-    // necessary for content to be below app bar
     ...theme.mixins.toolbar,
   },
   content: {
@@ -93,13 +93,30 @@ const useStyles = makeStyles((theme) => ({
   },
   logo: {
     marginRight: 'auto',
+    width: '230px',
+  },
+  logOut: {
+    whiteSpace: 'nowrap',
+  },
+  logOutSmall: {
+    whiteSpace: 'nowrap',
+    fontSize: '12px',
   },
 }));
 
 const Nav = ({ children, signOutFn }) => {
   const classes = useStyles();
-  const userName = firebase.auth().currentUser ? firebase.auth().currentUser.displayName : 'user';
   const [open, setOpen] = useState(false);
+  const [userName, setUserName] = useState(null);
+
+  useEffect(() => {
+    const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        setUserName(user.displayName);
+      } else setUserName(null);
+    });
+    return unsubscribe;
+  }, []);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -108,6 +125,8 @@ const Nav = ({ children, signOutFn }) => {
   const handleDrawerClose = () => {
     setOpen(false);
   };
+
+  const smallScreen = useMediaQuery('(max-width:440px)');
 
   return (
     <div className={classes.root}>
@@ -131,9 +150,13 @@ const Nav = ({ children, signOutFn }) => {
           </IconButton>
           <Logo className={classes.logo} />
           <Link className={classes.link} onClick={signOutFn} to={routes.home}>
-            <Typography>
-            log out</Typography></Link>
-          <Avatar className={classes.avatar}>{userName.slice(0,1).toUpperCase()}</Avatar>
+            <Typography className={smallScreen ? classes.logOutSmall : classes.logOut}>
+              log out
+            </Typography>
+
+          </Link>
+          {console.log(userName)}
+          <Avatar className={classes.avatar}>{userName && userName.slice(0, 1).toUpperCase()}</Avatar>
         </Toolbar>
       </AppBar>
       <Drawer
@@ -191,7 +214,7 @@ const Nav = ({ children, signOutFn }) => {
 };
 
 const mapDispatchToProps = (dispatch) => ({
-  signOutFn: () => dispatch(signOutAction())
-})
+  signOutFn: () => dispatch(signOutAction()),
+});
 
 export default connect(null, mapDispatchToProps)(Nav);

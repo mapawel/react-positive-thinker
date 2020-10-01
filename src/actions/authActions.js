@@ -3,8 +3,18 @@ export const signUpAction = (signupdata) => (dispatch, getState, { getFirebase }
   firebase
     .auth()
     .createUserWithEmailAndPassword(signupdata.email, signupdata.password)
-    .then(() => {
-      firebase.auth().currentUser.updateProfile({displayName: signupdata.name })
+    .then((user) => {
+      user.user.updateProfile({displayName: signupdata.name })
+    })
+    .then(()=>{
+      firebase
+      .auth()
+      .signOut()
+    })
+    .then(()=>{
+      firebase
+      .auth()
+      .signInWithEmailAndPassword(signupdata.email, signupdata.password)
     })
     .then(() => {
       dispatch({
