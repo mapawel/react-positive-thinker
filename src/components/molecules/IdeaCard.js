@@ -3,7 +3,7 @@ import moment from 'moment';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
 import {
-  Card, CardHeader, CardContent, CardActions, Avatar, IconButton, Typography, Collapse, Grid,
+  Card, CardHeader, CardContent, CardActions, Avatar, IconButton, Typography, Collapse, Grid, CardMedia,
 } from '@material-ui/core';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
@@ -60,10 +60,14 @@ const useStyles = makeStyles((theme) => ({
   likeIconActive: {
     color: theme.palette.primary.main,
   },
+  media: {
+    height: 0,
+    paddingTop: '56.25%', // 16:9
+  },
 }));
 
 const IdeaCard = ({
-  deleteIdeaFn, match, authorName = '', date, like = [], authorMail, id, content, handleClickOpen, addLikeFn, removeLikeFn, uid
+  deleteIdeaFn, match, authorName = '', date, like = [], authorMail, id, content, imageUrl, handleClickOpen, addLikeFn, removeLikeFn, uid,
 }) => {
   const classes = useStyles();
   const [expanded, setExpanded] = React.useState(false);
@@ -120,6 +124,10 @@ const IdeaCard = ({
           </CardActions>
         )}
       />
+      {imageUrl &&       <CardMedia
+        className={classes.media}
+        image={imageUrl}
+      />}
 
       <CardContent>
         <Typography variant="body1" color="textPrimary" component="p">

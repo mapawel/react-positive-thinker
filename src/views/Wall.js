@@ -46,7 +46,7 @@ const Wall = ({ uid, match }) => {
 
   const mainComponent = ideas && (
     ideas.length !== 0 ? (ideas.map(({
-      id, date, like, content, authorName = '', authorMail,
+      id, date, like, content, authorName = '', authorMail, imageUrl
     }) => (
       <Grid item key={id} xs={12} md={6}>
         <IdeaCard
@@ -57,6 +57,7 @@ const Wall = ({ uid, match }) => {
           authorName={authorName}
           authorMail={authorMail}
           handleClickOpen={handleClickOpen}
+          imageUrl={imageUrl}
         />
       </Grid>
     ))

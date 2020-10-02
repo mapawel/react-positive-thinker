@@ -18,6 +18,7 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { signOutAction } from 'actions/authActions';
 import firebase from 'config/fbConfig';
+import LinearDeterminate from 'components/organizms/uploadStatus';
 
 const drawerWidth = 220;
 
@@ -121,7 +122,7 @@ const Nav = ({ children, signOutFn }) => {
   const handleDrawerOpen = () => {
     setOpen(true);
   };
-
+  
   const handleDrawerClose = () => {
     setOpen(false);
   };
@@ -153,13 +154,13 @@ const Nav = ({ children, signOutFn }) => {
             <Typography className={smallScreen ? classes.logOutSmall : classes.logOut}>
               log out
             </Typography>
-
           </Link>
-          {console.log(userName)}
           <Avatar className={classes.avatar}>{userName && userName.slice(0, 1).toUpperCase()}</Avatar>
         </Toolbar>
       </AppBar>
       <Drawer
+      onMouseEnter={handleDrawerOpen}
+      onMouseLeave={handleDrawerClose}
         variant="permanent"
         className={clsx(classes.drawer, {
           [classes.drawerOpen]: open,
@@ -207,6 +208,8 @@ const Nav = ({ children, signOutFn }) => {
       </Drawer>
       <main className={classes.content}>
         <div className={classes.toolbar} />
+  <LinearDeterminate />
+
         {children}
       </main>
     </div>

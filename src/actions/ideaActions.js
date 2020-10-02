@@ -1,34 +1,62 @@
-import firebase from 'config/fbConfig';
+import firebase, { storage } from 'config/fbConfig';
 
 export const addIdea = (idea) => (dispatch, getState, { getFirebase }) => {
   const firestore = getFirebase().firestore();
   const user = firebase.auth().currentUser;
-  firestore
-    .collection('ideas')
-    .add({
-      ...idea,
-      date: new Date(),
-      authorId: user.uid,
-      authorName: user.displayName,
-      authorMail: user.email,
-    })
-    .then(() => {
-      dispatch({
-        type: 'ADD_IDEA',
+  let imageUrl;
+
+  const addPost = (imageUrl) => {
+    firestore
+      .collection('ideas')
+      .add({
+        content: idea.content,
+        date: new Date(),
+        authorId: user.uid,
+        authorName: user.displayName,
+        authorMail: user.email,
+        imageUrl,
+      })
+      .then(() => {
+        dispatch({
+          type: 'ADD_IDEA',
+        });
+      })
+      .catch((err) => {
+        dispatch({
+          type: 'ADD_IDEA_ERROR',
+          payload: err,
+        });
       });
-    })
-    .catch((err) => {
-      dispatch({
-        type: 'ADD_IDEA_ERROR',
-        payload: err,
+  };
+
+  if (idea.image === '') {
+    addPost(null);
+  } else {
+    const uploadTask = storage.ref(`/images/${idea.image.name}`).put(idea.image);
+    uploadTask.on('state_changed',
+      (snapShot) => {
+        dispatch({
+          type: 'UPLOAD_STATUS',
+          payload: {
+            transferred: snapShot.bytesTransferred,
+            total: snapShot.totalBytes,
+            status: snapShot.state,
+        }})
+      }, (err) => {
+      }, () => {
+        storage.ref('images').child(idea.image.name).getDownloadURL()
+          .then((fireBaseUrl) => {
+            imageUrl = fireBaseUrl;
+            addPost(imageUrl);
+          });
       });
-    });
+  }
 };
 
 export const addLike = (likedPostId) => async (dispatch, getState, { getFirebase }) => {
   const firestore = getFirebase().firestore();
   const user = firebase.auth().currentUser;
-  const likedDoc = await firestore.collection('ideas').doc(likedPostId).get()
+  const likedDoc = await firestore.collection('ideas').doc(likedPostId).get();
   const likeArr = likedDoc.data().like ? likedDoc.data().like : [];
 
   firestore
@@ -53,9 +81,9 @@ export const addLike = (likedPostId) => async (dispatch, getState, { getFirebase
 export const removeLike = (likedPostId) => async (dispatch, getState, { getFirebase }) => {
   const firestore = getFirebase().firestore();
   const user = firebase.auth().currentUser;
-  const likedDoc = await firestore.collection('ideas').doc(likedPostId).get()
+  const likedDoc = await firestore.collection('ideas').doc(likedPostId).get();
   const likeArr = likedDoc.data().like ? likedDoc.data().like : [];
-  const newLikeArr = likeArr.filter(el => el !== user.uid)
+  const newLikeArr = likeArr.filter((el) => el !== user.uid);
 
   firestore
     .collection('ideas')

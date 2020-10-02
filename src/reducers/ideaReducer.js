@@ -1,6 +1,14 @@
 import { toast } from 'react-toastify';
+const initialState = {
+  uploadStatus: {
+    transferred: '',
+    total: '',
+    status: '',
+  }
+}
 
-const ideaReducer = (state = {}, { type, payload }) => {
+
+const ideaReducer = (state = initialState, { type, payload }) => {
   switch (type) {
     case 'ADD_IDEA':
       toast.success("Your idea added! :)")
@@ -35,6 +43,16 @@ const ideaReducer = (state = {}, { type, payload }) => {
       case 'DELETE_IDEA_ERROR':
       toast.error("There is a problem with removing this idea... :(")
       return state;
+      case 'UPLOAD_STATUS':
+        // return state;
+      return {
+        ...state,
+        uploadStatus: {
+          transferred: payload.transferred,
+          total: payload.total,
+          status: payload.status,
+        }
+      };
     default:
       return state;
   }
