@@ -12,6 +12,7 @@
     "eslint": "^6.6.0",
     "firebase": "^7.21.0",
     "formik": "^2.1.5",
+    "material-ui-image": "^3.2.4",
     "moment": "^2.28.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",

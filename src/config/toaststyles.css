@@ -36,10 +36,10 @@
   
   @media only screen and (max-width : 480px) {
     .Toastify__toast-container {
-      width: 100vw;
+      width: calc(100vw - 20px);
       padding: 0;
       left: 0;
-      margin: 0;
+      margin: 10px;
     }
     .Toastify__toast-container--top-left, .Toastify__toast-container--top-center, .Toastify__toast-container--top-right {
       top: 0;
@@ -59,8 +59,8 @@
     min-height: 64px;
     box-sizing: border-box;
     margin-bottom: 1rem;
-    padding: 8px;
-    border-radius: 10px;
+    padding: 10px 20px;
+    border-radius: 8px;
     box-shadow: 0 1px 10px 0 rgba(0, 0, 0, 0.1), 0 2px 15px 0 rgba(0, 0, 0, 0.05);
     display: -ms-flexbox;
     display: flex;
@@ -81,7 +81,7 @@
   }
   .Toastify__toast--default {
     background: #fff;
-    color: #aaa;
+    color: rgb(102, 102, 102);
   }
   .Toastify__toast--info {
     background: #3498db;
@@ -93,7 +93,7 @@
     background: #f1c40f;
   }
   .Toastify__toast--error {
-    background: #e74c3c;
+    background: #a05e57;
   }
   .Toastify__toast-body {
     margin: auto 0;
@@ -162,7 +162,7 @@
     transform-origin: right;
   }
   .Toastify__progress-bar--default {
-    background: linear-gradient(to right, #4cd964, #5ac8fa, #007aff, #34aadc, #5856d6, #ff2d55);
+    background-color: #349895;
   }
   .Toastify__progress-bar--dark {
     background: #bb86fc;

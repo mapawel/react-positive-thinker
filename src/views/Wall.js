@@ -7,10 +7,13 @@ import { getFirebase } from 'react-redux-firebase';
 import Nav from 'components/organizms/Nav';
 import AddComment from 'components/organizms/AddComment';
 import NoItemsInfo from 'components/atoms/NoItemsInfo';
+import ImageOpen from 'components/atoms/ImageOpen';
 
 const Wall = ({ uid, match }) => {
   const [open, setOpen] = useState(false);
+  const [openImage, setOpenImage] = useState(false);
   const [openId, setOpenId] = useState('');
+  const [openImageUrl, setOpenImageUrl] = useState('');
   const [openContent, setOpenContent] = useState('');
   const [ideas, setIdeas] = useState();
 
@@ -40,34 +43,44 @@ const Wall = ({ uid, match }) => {
     setOpenContent(content);
   };
 
+  const handleClickImage = (url) => {
+    setOpenImage(true);
+    setOpenImageUrl(url);
+  };
+
+  const handleClickImageClose = () => {
+    setOpenImage(false);
+  };
+
   const handleClickClose = () => {
     setOpen(false);
   };
 
   const mainComponent = ideas && (
     ideas.length !== 0 ? (ideas.map(({
-      id, date, like, content, authorName = '', authorMail, imageUrl
+      id, date, like, content, authorName = '', authorMail, imageUrl,
     }) => (
-      <Grid item key={id} xs={12} md={6}>
-        <IdeaCard
-          id={id}
-          date={date}
-          like={like}
-          content={content}
-          authorName={authorName}
-          authorMail={authorMail}
-          handleClickOpen={handleClickOpen}
-          imageUrl={imageUrl}
-        />
-      </Grid>
-    ))
+        <Grid item key={id} xs={12} md={6}>
+          <IdeaCard
+            id={id}
+            date={date}
+            like={like}
+            content={content}
+            authorName={authorName}
+            authorMail={authorMail}
+            handleClickOpen={handleClickOpen}
+            imageUrl={imageUrl}
+            handleClickImage={handleClickImage}
+          />
+        </Grid>
+      ))
     ) : (
-      <NoItemsInfo like={match.path === routes.favs} />
-    )
+        <NoItemsInfo like={match.path === routes.favs} />
+      )
   );
 
   return (
-    <Nav>
+    <Nav style={{ position: 'relative' }}>
       <Container maxWidth="xl">
         <Grid
           container
@@ -79,6 +92,7 @@ const Wall = ({ uid, match }) => {
         </Grid>
       </Container>
       {open && <AddComment id={openId} content={openContent} handleClickClose={handleClickClose} />}
+      {openImage && <ImageOpen openImageUrl={openImageUrl} handleClickImageClose={handleClickImageClose} />}
     </Nav>
   );
 };

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import GlobalStyle from 'themes/GlobalStyle';
-
 import { ThemeProvider } from '@material-ui/core/styles';
 import theme from 'themes/mainTheme';
 import {
@@ -12,7 +11,6 @@ import Wall from 'views/Wall';
 import Detailidea from 'views/Detailidea';
 import { ToastContainer } from 'react-toastify';
 import 'config/toaststyles.css';
-import { useSelector } from 'react-redux';
 import SignedInUp from 'views/SignInUp';
 import firebase from 'config/fbConfig';
 
@@ -36,7 +34,13 @@ const Root = () => {
     <ThemeProvider theme={theme}>
       <GlobalStyle />
       <BrowserRouter>
-        <ToastContainer />
+        <ToastContainer
+          position="top-center"
+          autoClose={2500}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+        />
         {user ? null : <SignedInUp />}
         <UserIsLoggedIn>
           <Switch>

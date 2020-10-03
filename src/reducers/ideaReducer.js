@@ -11,25 +11,25 @@ const initialState = {
 const ideaReducer = (state = initialState, { type, payload }) => {
   switch (type) {
     case 'ADD_IDEA':
-      toast.success("Your idea added! :)")
+      toast("Your idea added! :)")
       return state;
       case 'ADD_IDEA_ERROR':
       toast.error("There is a problem with adding... :(")
       return state;
     case 'ADD_LIKE':
-      toast.success("You like this post! :)")
+      toast("You like this post! :)")
       return state;
       case 'ADD_LIKE_ERROR':
       toast.error("There is a problem with adding a like... :(")
       return state;
     case 'REMOVE_LIKE':
-      toast.success("You dislike this post!")
+      toast("You dislike this post!")
       return state;
       case 'REMOVE_LIKE_ERROR':
       toast.error("There is a problem with removing a like... :(")
       return state;
     case 'COMMENT_IDEA':
-      toast.success("Your comment has been added")
+      toast("Your comment has been added")
       return state;
       case 'COMMENT_IDEA_ERROR':
       toast.error("There is a problem with a comment... :(")
@@ -38,13 +38,12 @@ const ideaReducer = (state = initialState, { type, payload }) => {
       toast.error(payload)
       return state;
       case 'DELETE_IDEA':
-      toast.info("The idea succesfully removed ;)")
+      toast("The idea succesfully removed ;)")
       return state;
       case 'DELETE_IDEA_ERROR':
       toast.error("There is a problem with removing this idea... :(")
       return state;
       case 'UPLOAD_STATUS':
-        // return state;
       return {
         ...state,
         uploadStatus: {
@@ -59,4 +58,3 @@ const ideaReducer = (state = initialState, { type, payload }) => {
 };
 
 export default ideaReducer;
-

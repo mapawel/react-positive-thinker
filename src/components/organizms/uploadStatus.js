@@ -2,16 +2,26 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { connect } from 'react-redux';
+import clsx from 'clsx';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   root: {
     position: 'absolute',
-    width: '100%',
+    top: '75px',
+    zIndex: '200',
+    width: '85%',
+    height: '80px',
+    padding: '38px 20px',
+    backgroundColor: '#000000BB',
+    borderRadius: '10px',
+    boxShadow: theme.shadows[12],
+    transition: 'transform .2s',
+    transform: 'translateY(0)',
   },
   rootHidden: {
-    display: 'none',
+    transform: 'translateY(-150px)',
   },
-});
+}));
 
 const LinearDeterminate = ({ uploadStatus: { transferred, total } }) => {
   const classes = useStyles();
@@ -20,34 +30,27 @@ const LinearDeterminate = ({ uploadStatus: { transferred, total } }) => {
 
   React.useEffect(() => {
     if (transferred && total) {
-      let diff = total - transferred;
-      let calculatedProgress = ((total - diff) / total) * 100;
+      const diff = total - transferred;
+      const calculatedProgress = ((total - diff) / total) * 100;
       setProgress(calculatedProgress);
     }
 
-    if(progress === 100 || progress === 0) {
-      setIsHidden(true)
+    if (progress === 100 || progress === 0) {
+      setIsHidden(true);
+    } else {
+      setIsHidden(false);
     }
-    else {
-      setIsHidden(false)}
-    // return () => {};
   }, [transferred, total, isHidden, progress]);
 
   return (
-    <div className={isHidden? classes.rootHidden : classes.root}>
+    <div className={clsx(classes.root, {[classes.rootHidden]: isHidden})}>
       <LinearProgress variant="determinate" value={progress} />
     </div>
   );
 };
 
-const mapStateToProps = (state) => ({
-  uploadStatus: state.idea.uploadStatus,
+const mapStateToProps = ({ idea: { uploadStatus } }) => ({
+  uploadStatus,
 });
 
 export default connect(mapStateToProps)(LinearDeterminate);
-
-// uploadStatus: {
-//   transferred: payload.transferred,
-//   total: payload.total,
-//   status: payload.status,
-// }

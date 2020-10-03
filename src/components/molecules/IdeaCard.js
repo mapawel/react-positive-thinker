@@ -10,18 +10,23 @@ import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import AddCommentIcon from '@material-ui/icons/AddComment';
 import { connect } from 'react-redux';
-import { deleteIdea } from 'actions/ideaActions';
-import { removeLike } from 'actions/ideaActions';
-import { addLike } from 'actions/ideaActions';
+import { removeLike, addLike } from 'actions/ideaActions';
+
 import { routes } from 'routes';
 import { withRouter } from 'react-router-dom';
 import Conversation from 'components/molecules/Conversation';
 import { getFirebase } from 'react-redux-firebase';
+import { toast } from 'react-toastify';
+import DeleteToast from 'components/atoms/DeleteToast';
 
 const useStyles = makeStyles((theme) => ({
   root: {
     boxShadow: theme.shadows[4],
-    // maxWidth: '90vw',
+    opacity: '1',
+    transition: 'opacity .2s',
+  },
+  rootDisapear: {
+    opacity: '0',
   },
   avatar: {
     backgroundColor: theme.palette.primary.dark,
@@ -62,24 +67,41 @@ const useStyles = makeStyles((theme) => ({
   },
   media: {
     height: 0,
-    paddingTop: '56.25%', // 16:9
+    paddingTop: '56.25%',
+    cursor: 'pointer',
+  },
+  removeBtn: {
+    marginRight: 'auto',
+    fontSize: '20px',
+    marginBottom: '5px',
+  },
+  removeIcon: {
+    color: theme.palette.success.dark,
   },
 }));
 
 const IdeaCard = ({
-  deleteIdeaFn, match, authorName = '', date, like = [], authorMail, id, content, imageUrl, handleClickOpen, addLikeFn, removeLikeFn, uid,
+  match, authorName = '', date, like = [], authorMail, id, content, imageUrl, handleClickOpen, addLikeFn, removeLikeFn, uid, handleClickImage,
 }) => {
   const classes = useStyles();
   const [expanded, setExpanded] = React.useState(false);
   const [comments, setComments] = React.useState([]);
+  const [disapear, setDisapear] = React.useState(false);
   const CapitalizeName = authorName.slice(0, 1).toUpperCase() + authorName.slice(1);
   const nameInitial = authorName.slice(0, 1).toUpperCase();
   const likeCount = like.length;
-  const isUserLike = like.includes(uid)
+  const isUserLike = like.includes(uid);
 
   const handleDelete = () => {
-    deleteIdeaFn(id);
+    toggleDispaear();
+    toast(<DeleteToast id={id} toggleDispaear={toggleDispaear} />, {
+      onClose: toggleDispaear
+    });
   };
+
+  const toggleDispaear = () => {
+    setDisapear((oldState) => (!oldState))
+  }
 
   const handleLike = () => {
     if (like.includes(uid)) removeLikeFn(id);
@@ -92,16 +114,17 @@ const IdeaCard = ({
 
   useEffect(() => {
     const firestoreCurrentDoc = getFirebase().firestore().collection('ideas').doc(id)
-      .collection('messages').orderBy('commentDate');
-    const unsubsctibe = firestoreCurrentDoc.onSnapshot((snap) => {
+      .collection('messages')
+      .orderBy('commentDate');
+    const unsubscribe = firestoreCurrentDoc.onSnapshot((snap) => {
       const data = snap.docs.map((el) => ({ id: el.id, ...el.data() }));
       setComments(data);
     });
-    return () => unsubsctibe();
+    return () => unsubscribe();
   }, []);
 
   return (
-    <Card className={classes.root}>
+    <Card className={clsx(classes.root, {[classes.rootDisapear]: disapear})}>
       <CardHeader
         avatar={(
           <Avatar aria-label="recipe" className={classes.avatar}>
@@ -112,23 +135,21 @@ const IdeaCard = ({
         subheader={moment(date.toDate()).calendar()}
         action={(
           <CardActions disableSpacing>
-            <IconButton aria-label="add to favorites" onClick={handleLike} >
+            <IconButton aria-label="add to favorites" onClick={handleLike}>
               <FavoriteIcon className={isUserLike ? classes.likeIconActive : classes.likeIcon} />
             </IconButton>
             {likeCount !== 0 ? <Typography>{likeCount}</Typography> : null}
-            {match.path === routes.ideas && (
-              <IconButton aria-label="delete" onClick={handleDelete}>
-                <DeleteForeverIcon color="secondary" />
-              </IconButton>
-            )}
+
           </CardActions>
         )}
       />
-      {imageUrl &&       <CardMedia
-        className={classes.media}
-        image={imageUrl}
-      />}
-
+      {imageUrl && (
+        <CardMedia
+          className={classes.media}
+          image={imageUrl}
+          onClick={() => handleClickImage(imageUrl)}
+        />
+      )}
       <CardContent>
         <Typography variant="body1" color="textPrimary" component="p">
           {content}
@@ -138,15 +159,19 @@ const IdeaCard = ({
         className={classes.actionsContainer}
       >
         <Grid container direction="column" spacing={0}>
-          <Grid item container direction="row" alignItems="center" justify="flex-end"  spacing={4}>
+          <Grid item container direction="row" alignItems="center" justify="flex-end" spacing={4}>
+            {match.path === routes.ideas && (
+              <IconButton className={classes.removeBtn} aria-label="delete" onClick={handleDelete}>
+                <DeleteForeverIcon fontSize="large" className={classes.removeIcon} />
+              </IconButton>
+            )}
             <Grid item>
               <IconButton
                 className={classes.expand}
                 onClick={() => handleClickOpen(id, content)}
                 aria-label="add comment"
-                
               >
-                <AddCommentIcon style={{marginLeft: 'auto'}}/>
+                <AddCommentIcon style={{ marginLeft: 'auto' }} />
               </IconButton>
             </Grid>
             <Grid item>
@@ -184,7 +209,6 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  deleteIdeaFn: (id) => dispatch(deleteIdea(id)),
   addLikeFn: (likedPostId) => dispatch(addLike(likedPostId)),
   removeLikeFn: (likedPostId) => dispatch(removeLike(likedPostId)),
 });

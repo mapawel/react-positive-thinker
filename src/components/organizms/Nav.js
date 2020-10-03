@@ -25,6 +25,7 @@ const drawerWidth = 220;
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
+    padding: '20px 0',
   },
   appBar: {
     backgroundColor: theme.palette.success.main,
@@ -81,8 +82,8 @@ const useStyles = makeStyles((theme) => ({
     ...theme.mixins.toolbar,
   },
   content: {
+    position: 'relative',
     flexGrow: 1,
-    padding: theme.spacing(3),
   },
   link: {
     textDecoration: 'none',
@@ -94,7 +95,6 @@ const useStyles = makeStyles((theme) => ({
   },
   logo: {
     marginRight: 'auto',
-    width: '230px',
   },
   logOut: {
     whiteSpace: 'nowrap',
@@ -159,8 +159,8 @@ const Nav = ({ children, signOutFn }) => {
         </Toolbar>
       </AppBar>
       <Drawer
-      onMouseEnter={handleDrawerOpen}
-      onMouseLeave={handleDrawerClose}
+      onMouseEnter={!smallScreen ? handleDrawerOpen : ()=>{}}
+      onMouseLeave={!smallScreen ? handleDrawerClose: ()=>{}}
         variant="permanent"
         className={clsx(classes.drawer, {
           [classes.drawerOpen]: open,
@@ -208,8 +208,7 @@ const Nav = ({ children, signOutFn }) => {
       </Drawer>
       <main className={classes.content}>
         <div className={classes.toolbar} />
-  <LinearDeterminate />
-
+        <LinearDeterminate />
         {children}
       </main>
     </div>

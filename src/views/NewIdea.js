@@ -1,18 +1,32 @@
 import React, { useState } from 'react';
 import {
-  Grid, Container, Box, Typography, Input,
+  Grid, Container, Box, Typography, Button, TextField,
 } from '@material-ui/core';
-import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
+import { makeStyles } from '@material-ui/core/styles'
 import { connect } from 'react-redux';
 import { addIdea } from 'actions/ideaActions';
 import Nav from 'components/organizms/Nav';
 import { Formik } from 'formik';
 import { schemaAddPost } from 'validators/validatorSchema';
 
+const useStyles = makeStyles({
+  labelButton: {
+    marginBottom: '20px',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+  },
+  headTxt: {
+    marginBottom: '20px',
+  },
+  uploadBtn: {
+    alignSelf: 'flex-end',
+  },
+})
 
 const NewIdea = ({ addIdeaFn, history: { goBack } }) => {
   const [image, setImage] = useState('');
+  const classes = useStyles();
 
   const handleAddImageChange = (e) => {
     if (e.target.files[0]) {
@@ -30,12 +44,31 @@ const NewIdea = ({ addIdeaFn, history: { goBack } }) => {
           style={{ minHeight: '60vh' }}
         >
           <Grid item xs={12} md={6}>
+            <Box mb={2} >
+              <input
+                accept="image/*"
+                style={{ display: 'none' }}
+                id="image"
+                multiple
+                type="file"
+                onChange={handleAddImageChange}
+              />
+              <label className={classes.labelButton} htmlFor="image">
+                <Typography className={classes.headTxt} variant="subtitle1" color="textSecondary">
+                  Upload a nice image and comment it or just
+                  write something motivating!
+                </Typography>
+                <Button className={classes.uploadBtn} variant="contained" color="secondary" component="span">
+                  Upload
+                </Button>
+              </label>
+            </Box>
             <Formik
-              initialValues={{ content: ''}}
+              initialValues={{ content: '' }}
               validationSchema={schemaAddPost}
               onSubmit={
                 (values, { setSubmitting }) => {
-                  addIdeaFn({...values, image});
+                  addIdeaFn({ ...values, image });
                   setTimeout(() => {
                     setSubmitting(false);
                     goBack();
@@ -56,8 +89,6 @@ const NewIdea = ({ addIdeaFn, history: { goBack } }) => {
                 const handleEnter = (e) => {
                   e.key === 'Enter' && handleSubmit();
                 };
-
-
 
                 return (
                   <form
@@ -96,22 +127,7 @@ const NewIdea = ({ addIdeaFn, history: { goBack } }) => {
                 );
               }}
             </Formik>
-            <Box mb={2}>
-                      <input
-                        accept="image/*"
-                        style={{ display: 'none' }}
-                        id="image"
-                        multiple
-                        type="file"
-                        onChange={handleAddImageChange}
-                      />
-                      <label htmlFor="image">
-                        <Button variant="contained" component="span">
-                          Upload
-                        </Button>
-                      </label>
-                      {/* {errors.content && <Typography variant="caption">{errors.content}</Typography>} */}
-                    </Box>
+
           </Grid>
         </Grid>
       </Container>

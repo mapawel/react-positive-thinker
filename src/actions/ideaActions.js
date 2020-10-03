@@ -32,7 +32,8 @@ export const addIdea = (idea) => (dispatch, getState, { getFirebase }) => {
   if (idea.image === '') {
     addPost(null);
   } else {
-    const uploadTask = storage.ref(`/images/${idea.image.name}`).put(idea.image);
+    const sufix = Math.floor(Math.random()*10000);
+    const uploadTask = storage.ref(`/images/${idea.image.name}${sufix}`).put(idea.image);
     uploadTask.on('state_changed',
       (snapShot) => {
         dispatch({
@@ -44,7 +45,7 @@ export const addIdea = (idea) => (dispatch, getState, { getFirebase }) => {
         }})
       }, (err) => {
       }, () => {
-        storage.ref('images').child(idea.image.name).getDownloadURL()
+        storage.ref('images').child(`${idea.image.name}${sufix}`).getDownloadURL()
           .then((fireBaseUrl) => {
             imageUrl = fireBaseUrl;
             addPost(imageUrl);
@@ -143,6 +144,7 @@ export const addComment = (commentedId, comment) => async (dispatch, getState, {
 
 export const deleteIdea = (id) => (dispatch, getState, { getFirebase }) => {
   const firestore = getFirebase().firestore();
+
   firestore
     .collection('ideas')
     .doc(id)
