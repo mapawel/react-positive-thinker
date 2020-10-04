@@ -44,7 +44,9 @@ const ConversationItem = ({
           </Grid>
           <Grid className={classes.commentHeaderTxt} item container direction="column" spacing={0} alignItems="flex-start">
             <Grid item>
-              <Typography variant="caption">{`${commentAuthorMail} ${isCommentingAutor && ' <- author'}`}</Typography>
+              <Typography variant="caption">{commentAuthorMail}</Typography>
+              {isCommentingAutor && <Typography variant="caption"> --author</Typography>}
+              
             </Grid>
             <Grid item>
               <Typography variant="caption">{moment(commentDate.toDate()).calendar()}</Typography>

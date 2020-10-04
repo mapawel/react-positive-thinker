@@ -1,18 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import GlobalStyle from 'themes/GlobalStyle';
-import { ThemeProvider } from '@material-ui/core/styles';
-import theme from 'themes/mainTheme';
 import {
-  BrowserRouter, Switch, Route, Redirect,
+  BrowserRouter, Switch, Route,
 } from 'react-router-dom';
 import { routes } from 'routes';
+import firebase from 'config/fbConfig';
 import NewIdea from 'views/NewIdea';
 import Wall from 'views/Wall';
-import Detailidea from 'views/Detailidea';
-import { ToastContainer } from 'react-toastify';
-import 'config/toaststyles.css';
 import SignedInUp from 'views/SignInUp';
-import firebase from 'config/fbConfig';
+import UserIsLoggedIn from 'views/UserIsLoggedIn';
+import RootThemeTemplate from 'templates/RootThemeTemplate';
 
 const Root = () => {
   const [user, setUser] = useState(null);
@@ -26,34 +22,20 @@ const Root = () => {
     return unsubscribe;
   }, []);
 
-  const UserIsLoggedIn = ({ children }) => (
-    user ? children : <Redirect to="/" />
-  );
-
   return (
-    <ThemeProvider theme={theme}>
-      <GlobalStyle />
+    <RootThemeTemplate>
       <BrowserRouter>
-        <ToastContainer
-          position="top-center"
-          autoClose={2500}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-        />
         {user ? null : <SignedInUp />}
-        <UserIsLoggedIn>
+        <UserIsLoggedIn user={user}>
           <Switch>
             <Route exact path={routes.home} component={Wall} />
-            <Route exact path={routes.ideas} component={Wall} />
-            <Route path={routes.idea} component={Detailidea} />
-            <Route exact path={routes.favs} component={Wall} />
-            <Route path={routes.fav} component={Detailidea} />
+            <Route path={routes.ideas} component={Wall} />
+            <Route path={routes.favs} component={Wall} />
             <Route path={routes.newidea} component={NewIdea} />
           </Switch>
         </UserIsLoggedIn>
       </BrowserRouter>
-    </ThemeProvider>
+    </RootThemeTemplate>
   );
 };
 
