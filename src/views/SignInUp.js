@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import {
   Button, Grid, Container, Box,
@@ -30,9 +31,10 @@ class SignUp extends Component {
   }
 
   handleInputChange = (e) => {
+    const { user } = this.state;
     this.setState({
       user: {
-        ...this.state.user,
+        ...user,
         [e.target.id]: e.target.value,
       },
     });
@@ -46,9 +48,10 @@ class SignUp extends Component {
 
   handleSubbmit = (e) => {
     const { signUpFn, signInFn } = this.props;
+    const { signUpDisplay, user } = this.state;
     e.preventDefault();
-    if (this.state.signUpDisplay) signUpFn(this.state.user);
-    else signInFn(this.state.user);
+    if (signUpDisplay) signUpFn(user);
+    else signInFn(user);
     this.setState({
       user: {
         email: '',
@@ -143,5 +146,10 @@ const mapDispatchToProps = (dispatch) => ({
   signUpFn: (signupdata) => dispatch(signUpAction(signupdata)),
   signInFn: (signindata) => dispatch(signInAction(signindata)),
 });
+
+SignUp.propTypes = {
+  signUpFn: PropTypes.func.isRequired,
+  signInFn: PropTypes.func.isRequired,
+};
 
 export default connect(null, mapDispatchToProps)(SignUp);

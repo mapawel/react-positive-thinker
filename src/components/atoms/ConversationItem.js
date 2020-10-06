@@ -1,13 +1,10 @@
+/* eslint-disable react/forbid-prop-types */
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import moment from 'moment';
 import {
-  Card, CardHeader, CardContent, CardActions, Avatar, IconButton, Typography, Grid, Box,
+  Avatar, Typography, Grid, Box,
 } from '@material-ui/core';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import Divider from '@material-ui/core/Divider';
-import ListItemText from '@material-ui/core/ListItemText';
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({
@@ -46,7 +43,7 @@ const ConversationItem = ({
             <Grid item>
               <Typography variant="caption">{commentAuthorMail}</Typography>
               {isCommentingAutor && <Typography variant="caption"> --author</Typography>}
-              
+
             </Grid>
             <Grid item>
               <Typography variant="caption">{moment(commentDate.toDate()).calendar()}</Typography>
@@ -59,6 +56,14 @@ const ConversationItem = ({
       </Grid>
     </Box>
   );
+};
+
+ConversationItem.propTypes = {
+  comment: PropTypes.string.isRequired,
+  commentAuthorMail: PropTypes.string.isRequired,
+  commentAuthorName: PropTypes.string.isRequired,
+  isCommentingAutor: PropTypes.bool.isRequired,
+  commentDate: PropTypes.object.isRequired,
 };
 
 export default ConversationItem;

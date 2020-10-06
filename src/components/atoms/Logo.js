@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Typography, Box } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
@@ -31,14 +32,18 @@ const Logo = ({ className }) => {
   const smallScreen = useMediaQuery('(max-width:440px)');
   return (
     <Box className={className} display="block">
-      <Typography className={clsx(classes.firstLine, {[classes.firstLineSmall]: smallScreen})} variant="h6" color="secondary">
+      <Typography className={clsx(classes.firstLine, { [classes.firstLineSmall]: smallScreen })} variant="h6" color="secondary">
         think positive with
       </Typography>
-      <Typography className={clsx(classes.secondLine, {[classes.secondLineSmall]: smallScreen})} variant="h5" color="primary">
+      <Typography className={clsx(classes.secondLine, { [classes.secondLineSmall]: smallScreen })} variant="h5" color="primary">
         positive thinker
       </Typography>
     </Box>
   );
+};
+
+Logo.propTypes = {
+  className: PropTypes.string.isRequired,
 };
 
 export default Logo;

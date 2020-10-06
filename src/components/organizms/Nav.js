@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
@@ -122,7 +123,7 @@ const Nav = ({ children, signOutFn }) => {
   const handleDrawerOpen = () => {
     setOpen(true);
   };
-  
+
   const handleDrawerClose = () => {
     setOpen(false);
   };
@@ -159,8 +160,8 @@ const Nav = ({ children, signOutFn }) => {
         </Toolbar>
       </AppBar>
       <Drawer
-      onMouseEnter={!smallScreen ? handleDrawerOpen : ()=>{}}
-      onMouseLeave={!smallScreen ? handleDrawerClose: ()=>{}}
+        onMouseEnter={!smallScreen ? handleDrawerOpen : () => {}}
+        onMouseLeave={!smallScreen ? handleDrawerClose : () => {}}
         variant="permanent"
         className={clsx(classes.drawer, {
           [classes.drawerOpen]: open,
@@ -218,5 +219,10 @@ const Nav = ({ children, signOutFn }) => {
 const mapDispatchToProps = (dispatch) => ({
   signOutFn: () => dispatch(signOutAction()),
 });
+
+Nav.propTypes = {
+  children: PropTypes.node.isRequired,
+  signOutFn: PropTypes.func.isRequired,
+};
 
 export default connect(null, mapDispatchToProps)(Nav);

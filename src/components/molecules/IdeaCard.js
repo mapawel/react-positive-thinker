@@ -1,4 +1,6 @@
+/* eslint-disable react/forbid-prop-types */
 import React, { useEffect } from 'react';
+import PropTypes from 'prop-types';
 import moment from 'moment';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
@@ -11,7 +13,6 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import AddCommentIcon from '@material-ui/icons/AddComment';
 import { connect } from 'react-redux';
 import { removeLike, addLike } from 'actions/ideaActions';
-
 import { routes } from 'routes';
 import { withRouter } from 'react-router-dom';
 import Conversation from 'components/molecules/Conversation';
@@ -92,16 +93,16 @@ const IdeaCard = ({
   const likeCount = like.length;
   const isUserLike = like.includes(uid);
 
+  const toggleDispaear = () => {
+    setDisapear((oldState) => (!oldState));
+  };
+
   const handleDelete = () => {
     toggleDispaear();
     toast(<DeleteToast id={id} toggleDispaear={toggleDispaear} />, {
-      onClose: toggleDispaear
+      onClose: toggleDispaear,
     });
   };
-
-  const toggleDispaear = () => {
-    setDisapear((oldState) => (!oldState))
-  }
 
   const handleLike = () => {
     if (like.includes(uid)) removeLikeFn(id);
@@ -121,10 +122,10 @@ const IdeaCard = ({
       setComments(data);
     });
     return () => unsubscribe();
-  }, []);
+  }, [id]);
 
   return (
-    <Card className={clsx(classes.root, {[classes.rootDisapear]: disapear})}>
+    <Card className={clsx(classes.root, { [classes.rootDisapear]: disapear })}>
       <CardHeader
         avatar={(
           <Avatar aria-label="recipe" className={classes.avatar}>
@@ -212,5 +213,28 @@ const mapDispatchToProps = (dispatch) => ({
   addLikeFn: (likedPostId) => dispatch(addLike(likedPostId)),
   removeLikeFn: (likedPostId) => dispatch(removeLike(likedPostId)),
 });
+
+IdeaCard.propTypes = {
+  match: PropTypes.shape({
+    path: PropTypes.string.isRequired,
+  }).isRequired,
+  uid: PropTypes.string,
+  authorName: PropTypes.string.isRequired,
+  date: PropTypes.object.isRequired,
+  like: PropTypes.arrayOf(PropTypes.string),
+  authorMail: PropTypes.string.isRequired,
+  id: PropTypes.string.isRequired,
+  content: PropTypes.string.isRequired,
+  imageUrl: PropTypes.string.isRequired,
+  handleClickOpen: PropTypes.func.isRequired,
+  addLikeFn: PropTypes.func.isRequired,
+  removeLikeFn: PropTypes.func.isRequired,
+  handleClickImage: PropTypes.func.isRequired,
+};
+
+IdeaCard.defaultProps = {
+  uid: null,
+  like: [],
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(IdeaCard));

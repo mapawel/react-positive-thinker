@@ -3,7 +3,6 @@ import firebase, { storage } from 'config/fbConfig';
 export const addIdea = (idea) => (dispatch, getState, { getFirebase }) => {
   const firestore = getFirebase().firestore();
   const user = firebase.auth().currentUser;
-  let imageUrl;
 
   const addPost = (imageUrl) => {
     firestore
@@ -32,7 +31,7 @@ export const addIdea = (idea) => (dispatch, getState, { getFirebase }) => {
   if (idea.image === '') {
     addPost(null);
   } else {
-    const sufix = Math.floor(Math.random()*10000);
+    const sufix = Math.floor(Math.random() * 10000);
     const uploadTask = storage.ref(`/images/${idea.image.name}${sufix}`).put(idea.image);
     uploadTask.on('state_changed',
       (snapShot) => {
@@ -42,13 +41,17 @@ export const addIdea = (idea) => (dispatch, getState, { getFirebase }) => {
             transferred: snapShot.bytesTransferred,
             total: snapShot.totalBytes,
             status: snapShot.state,
-        }})
+          },
+        });
       }, (err) => {
+        dispatch({
+          type: 'UPLOAD_ERROR',
+          payload: err,
+        });
       }, () => {
         storage.ref('images').child(`${idea.image.name}${sufix}`).getDownloadURL()
           .then((fireBaseUrl) => {
-            imageUrl = fireBaseUrl;
-            addPost(imageUrl);
+            addPost(fireBaseUrl);
           });
       });
   }

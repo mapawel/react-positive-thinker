@@ -1,13 +1,15 @@
+/* eslint-disable no-unused-expressions */
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import {
   Grid, Container, Box, Typography, Button, TextField,
 } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import { addIdea } from 'actions/ideaActions';
-import Nav from 'components/organizms/Nav';
 import { Formik } from 'formik';
 import { schemaAddPost } from 'validators/validatorSchema';
+import Nav from 'components/organizms/Nav';
 
 const useStyles = makeStyles({
   labelButton: {
@@ -22,7 +24,7 @@ const useStyles = makeStyles({
   uploadBtn: {
     alignSelf: 'flex-end',
   },
-})
+});
 
 const NewIdea = ({ addIdeaFn, history: { goBack } }) => {
   const [image, setImage] = useState('');
@@ -44,16 +46,16 @@ const NewIdea = ({ addIdeaFn, history: { goBack } }) => {
           style={{ minHeight: '60vh' }}
         >
           <Grid item xs={12} md={6}>
-            <Box mb={2} >
-              <input
-                accept="image/*"
-                style={{ display: 'none' }}
-                id="image"
-                multiple
-                type="file"
-                onChange={handleAddImageChange}
-              />
+            <Box mb={2}>
               <label className={classes.labelButton} htmlFor="image">
+                <input
+                  accept="image/*"
+                  style={{ display: 'none' }}
+                  id="image"
+                  multiple
+                  type="file"
+                  onChange={handleAddImageChange}
+                />
                 <Typography className={classes.headTxt} variant="subtitle1" color="textSecondary">
                   Upload a nice image and comment it or just
                   write something motivating!
@@ -82,7 +84,6 @@ const NewIdea = ({ addIdeaFn, history: { goBack } }) => {
                 handleSubmit,
                 isSubmitting,
                 errors,
-                touched,
               }) => {
                 let isError = false;
                 if (errors.content) isError = true;
@@ -138,5 +139,12 @@ const NewIdea = ({ addIdeaFn, history: { goBack } }) => {
 const mapDispatchToProps = (dispatch) => ({
   addIdeaFn: (idea) => dispatch(addIdea(idea)),
 });
+
+NewIdea.propTypes = {
+  addIdeaFn: PropTypes.func.isRequired,
+  history: PropTypes.shape({
+    goBack: PropTypes.func.isRequired,
+  }).isRequired,
+};
 
 export default connect(null, mapDispatchToProps)(NewIdea);

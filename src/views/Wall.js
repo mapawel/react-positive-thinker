@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
 import { Container, Grid, CircularProgress } from '@material-ui/core';
-import IdeaCard from 'components/molecules/IdeaCard';
 import { connect } from 'react-redux';
 import { routes } from 'routes';
 import { getFirebase } from 'react-redux-firebase';
 import Nav from 'components/organizms/Nav';
+import IdeaCard from 'components/molecules/IdeaCard';
 import AddComment from 'components/organizms/AddComment';
 import NoItemsInfo from 'components/atoms/NoItemsInfo';
 import ImageOpen from 'components/atoms/ImageOpen';
@@ -60,23 +61,23 @@ const Wall = ({ uid, match }) => {
     ideas.length !== 0 ? (ideas.map(({
       id, date, like, content, authorName = '', authorMail, imageUrl,
     }) => (
-        <Grid item key={id} xs={12} md={6}>
-          <IdeaCard
-            id={id}
-            date={date}
-            like={like}
-            content={content}
-            authorName={authorName}
-            authorMail={authorMail}
-            handleClickOpen={handleClickOpen}
-            imageUrl={imageUrl}
-            handleClickImage={handleClickImage}
-          />
-        </Grid>
-      ))
+      <Grid item key={id} xs={12} md={6}>
+        <IdeaCard
+          id={id}
+          date={date}
+          like={like}
+          content={content}
+          authorName={authorName}
+          authorMail={authorMail}
+          handleClickOpen={handleClickOpen}
+          imageUrl={imageUrl}
+          handleClickImage={handleClickImage}
+        />
+      </Grid>
+    ))
     ) : (
-        <NoItemsInfo like={match.path === routes.favs} />
-      )
+      <NoItemsInfo like={match.path === routes.favs} />
+    )
   );
 
   return (
@@ -100,5 +101,16 @@ const Wall = ({ uid, match }) => {
 const mapStateToProps = (state) => ({
   uid: state.firebase.auth.uid,
 });
+
+Wall.propTypes = {
+  match: PropTypes.shape({
+    path: PropTypes.string.isRequired,
+  }).isRequired,
+  uid: PropTypes.string,
+};
+
+Wall.defaultProps = {
+  uid: null,
+};
 
 export default connect(mapStateToProps)(Wall);

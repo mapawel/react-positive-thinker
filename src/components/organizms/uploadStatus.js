@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { connect } from 'react-redux';
@@ -25,8 +26,8 @@ const useStyles = makeStyles((theme) => ({
 
 const LinearDeterminate = ({ uploadStatus: { transferred, total } }) => {
   const classes = useStyles();
-  const [progress, setProgress] = React.useState(0);
-  const [isHidden, setIsHidden] = React.useState(true);
+  const [progress, setProgress] = useState(0);
+  const [isHidden, setIsHidden] = useState(true);
 
   React.useEffect(() => {
     if (transferred && total) {
@@ -43,7 +44,7 @@ const LinearDeterminate = ({ uploadStatus: { transferred, total } }) => {
   }, [transferred, total, isHidden, progress]);
 
   return (
-    <div className={clsx(classes.root, {[classes.rootHidden]: isHidden})}>
+    <div className={clsx(classes.root, { [classes.rootHidden]: isHidden })}>
       <LinearProgress variant="determinate" value={progress} />
     </div>
   );
@@ -52,5 +53,12 @@ const LinearDeterminate = ({ uploadStatus: { transferred, total } }) => {
 const mapStateToProps = ({ idea: { uploadStatus } }) => ({
   uploadStatus,
 });
+
+LinearDeterminate.propTypes = {
+  uploadStatus: PropTypes.shape({
+    transferred: PropTypes.number.isRequired,
+    total: PropTypes.number.isRequired,
+  }).isRequired,
+};
 
 export default connect(mapStateToProps)(LinearDeterminate);

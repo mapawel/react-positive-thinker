@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import Button from '@material-ui/core/Button';
 import {
   TextField, Typography, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle,
@@ -31,12 +32,11 @@ const AddComment = ({
       handleSubmit,
       isSubmitting,
       errors,
-      touched,
     }) => {
       let isError = false;
       if (errors.comment) isError = true;
       const handleEnter = (e) => {
-        e.key === 'Enter' && handleSubmit();
+        if (e.key === 'Enter') handleSubmit();
       };
       return (
 
@@ -94,5 +94,12 @@ const AddComment = ({
 const mapDispatchToProps = (dispatch) => ({
   addCommentFn: (id, comment) => dispatch(addComment(id, comment)),
 });
+
+AddComment.propTypes = {
+  id: PropTypes.string.isRequired,
+  handleClickClose: PropTypes.func.isRequired,
+  content: PropTypes.string.isRequired,
+  addCommentFn: PropTypes.func.isRequired,
+};
 
 export default connect(null, mapDispatchToProps)(AddComment);

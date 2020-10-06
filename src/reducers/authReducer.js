@@ -9,14 +9,14 @@ const authReducer = (state = {}, { type, payload }) => {
       toast.error(`${payload.name}: ${payload.err.message}`);
       return state;
     case 'SIGN_OUT':
-      toast(`You have been succefully signed out!`);
+      toast('You have been succefully signed out!');
       return state;
     case 'SIGN_OUT_ERROR':
-      toast.error(`Something wrong with signing out :(`);
+      toast.error('Something wrong with signing out :(');
       toast.error(payload.message);
       return state;
     case 'SIGN_IN':
-      toast(`Welcome back! :)`);
+      toast('Welcome back! :)');
       return state;
     case 'SIGN_IN_ERROR':
       toast.error(payload.message);
