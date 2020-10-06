@@ -4,7 +4,7 @@ import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import {
-  Drawer, AppBar, Toolbar, List, IconButton, Typography, Avatar,
+  Drawer, AppBar, Toolbar, List, IconButton, Typography, Avatar, Box, Link as Href,
 } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
@@ -27,6 +27,16 @@ const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
     padding: '20px 0',
+    minHeight: 'calc(100vh - 35px)',
+  },
+  footer: {
+    paddingTop: '5px',
+    minHeight: '30px',
+    lineHeight: '30px',
+    textAlign: 'center',
+    backgroundColor: theme.palette.success.main,
+    // boxShadow: 0 5px 15px -3px ${({ theme }) => theme.color.darkshadow};
+    color: theme.palette.text.primary,
   },
   appBar: {
     backgroundColor: theme.palette.success.main,
@@ -131,88 +141,98 @@ const Nav = ({ children, signOutFn }) => {
   const smallScreen = useMediaQuery('(max-width:440px)');
 
   return (
-    <div className={classes.root}>
-      <AppBar
-        position="fixed"
-        className={clsx(classes.appBar, {
-          [classes.appBarShift]: open,
-        })}
-      >
-        <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDrawerOpen}
-            edge="start"
-            className={clsx(classes.menuButton, {
-              [classes.hide]: open,
-            })}
-          >
-            <MenuIcon color="secondary" />
-          </IconButton>
-          <Logo className={classes.logo} />
-          <Link className={classes.link} onClick={signOutFn} to={routes.home}>
-            <Typography className={smallScreen ? classes.logOutSmall : classes.logOut}>
-              log out
-            </Typography>
-          </Link>
-          <Avatar className={classes.avatar}>{userName && userName.slice(0, 1).toUpperCase()}</Avatar>
-        </Toolbar>
-      </AppBar>
-      <Drawer
-        onMouseEnter={!smallScreen ? handleDrawerOpen : () => {}}
-        onMouseLeave={!smallScreen ? handleDrawerClose : () => {}}
-        variant="permanent"
-        className={clsx(classes.drawer, {
-          [classes.drawerOpen]: open,
-          [classes.drawerClose]: !open,
-        })}
-        classes={{
-          paper: clsx(classes.drawer, {
+    <>
+      <div className={classes.root}>
+        <AppBar
+          position="fixed"
+          className={clsx(classes.appBar, {
+            [classes.appBarShift]: open,
+          })}
+        >
+          <Toolbar>
+            <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              onClick={handleDrawerOpen}
+              edge="start"
+              className={clsx(classes.menuButton, {
+                [classes.hide]: open,
+              })}
+            >
+              <MenuIcon color="secondary" />
+            </IconButton>
+            <Logo className={classes.logo} />
+            <Link className={classes.link} onClick={signOutFn} to={routes.home}>
+              <Typography className={smallScreen ? classes.logOutSmall : classes.logOut}>
+                log out
+              </Typography>
+            </Link>
+            <Avatar className={classes.avatar}>{userName && userName.slice(0, 1).toUpperCase()}</Avatar>
+          </Toolbar>
+        </AppBar>
+        <Drawer
+          onMouseEnter={!smallScreen ? handleDrawerOpen : () => { }}
+          onMouseLeave={!smallScreen ? handleDrawerClose : () => { }}
+          variant="permanent"
+          className={clsx(classes.drawer, {
             [classes.drawerOpen]: open,
             [classes.drawerClose]: !open,
-          }),
-        }}
-      >
-        <div className={classes.toolbar}>
-          <IconButton onClick={handleDrawerClose}>
-            <ChevronLeftIcon />
-          </IconButton>
-        </div>
-        <List>
-          <NavListIconButton
-            txt="wall"
-            to={routes.home}
-            exact
-          >
-            <BallotIcon fontSize="large" />
-          </NavListIconButton>
-          <NavListIconButton
-            txt="my Inspirations"
-            to={routes.ideas}
-          >
-            <FaceIcon fontSize="large" />
-          </NavListIconButton>
-          <NavListIconButton
-            txt="favorites"
-            to={routes.favs}
-          >
-            <FavoriteIcon fontSize="large" />
-          </NavListIconButton>
-          <NavListIconButton
-            txt="new Inspiration"
-            to={routes.newidea}
-          >
-            <AddCircleOutlineIcon fontSize="large" />
-          </NavListIconButton>
-        </List>
-      </Drawer>
-      <main className={classes.content}>
-        <div className={classes.toolbar} />
-        <LinearDeterminate />
-        {children}
-      </main>
-    </div>
+          })}
+          classes={{
+            paper: clsx(classes.drawer, {
+              [classes.drawerOpen]: open,
+              [classes.drawerClose]: !open,
+            }),
+          }}
+        >
+          <div className={classes.toolbar}>
+            <IconButton onClick={handleDrawerClose}>
+              <ChevronLeftIcon />
+            </IconButton>
+          </div>
+          <List>
+            <NavListIconButton
+              txt="wall"
+              to={routes.home}
+              exact
+            >
+              <BallotIcon fontSize="large" />
+            </NavListIconButton>
+            <NavListIconButton
+              txt="my Inspirations"
+              to={routes.ideas}
+            >
+              <FaceIcon fontSize="large" />
+            </NavListIconButton>
+            <NavListIconButton
+              txt="favorites"
+              to={routes.favs}
+            >
+              <FavoriteIcon fontSize="large" />
+            </NavListIconButton>
+            <NavListIconButton
+              txt="new Inspiration"
+              to={routes.newidea}
+            >
+              <AddCircleOutlineIcon fontSize="large" />
+            </NavListIconButton>
+          </List>
+        </Drawer>
+        <main className={classes.content}>
+          <div className={classes.toolbar} />
+          <LinearDeterminate />
+          {children}
+        </main>
+      </div>
+      <Box className={classes.footer}>
+        <Typography variant="caption">
+        &copy;
+        {' '}
+        <Href  href="https://github.com/mapawel">mapawel</Href>
+        , All rights reserved
+        </Typography>
+      </Box>
+    </>
   );
 };
 
