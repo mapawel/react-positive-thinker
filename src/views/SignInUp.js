@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import {
-  Button, Grid, Container, Box,
+  Button, Grid, Container, Box, Typography,
 } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
@@ -16,6 +16,14 @@ const StyledGrid = withStyles({
   },
 })(Grid);
 
+const StyledTypo = withStyles({
+  root: {
+    textAlign: 'center',
+    color: 'red',
+    marginBottom: '15px',
+  },
+})(Typography);
+
 const StyledLogo = styled(Logo)`
   margin-left: 10px;
 `;
@@ -28,6 +36,7 @@ class SignUp extends Component {
       name: '',
     },
     signUpDisplay: false,
+    areFieldsFilled: false,
   }
 
   handleInputChange = (e) => {
@@ -46,23 +55,42 @@ class SignUp extends Component {
     }));
   }
 
-  handleSubbmit = (e) => {
-    const { signUpFn, signInFn } = this.props;
-    const { signUpDisplay, user } = this.state;
-    e.preventDefault();
-    if (signUpDisplay) signUpFn(user);
-    else signInFn(user);
+  clearForm = () => {
     this.setState({
       user: {
         email: '',
         password: '',
         name: '',
       },
+      areFieldsFilled: false,
     });
   }
 
+  handleSubbmit = (e) => {
+    const { signUpFn, signInFn } = this.props;
+    const { signUpDisplay, user } = this.state;
+    e.preventDefault();
+    if (signUpDisplay) {
+      if (user.password && user.email && user.name) {
+        signUpFn(user);
+        this.clearForm();
+      } else {
+        this.setState({
+          areFieldsFilled: true,
+        });
+      }
+    } else if (user.password && user.email) {
+      signInFn(user);
+      this.clearForm();
+    } else {
+      this.setState({
+        areFieldsFilled: true,
+      });
+    }
+  }
+
   render() {
-    const { user: { email, password, name }, signUpDisplay } = this.state;
+    const { user: { email, password, name }, signUpDisplay, areFieldsFilled } = this.state;
     return (
       <Container maxWidth="xl">
         <Grid
@@ -120,6 +148,7 @@ class SignUp extends Component {
                   password
                 </InputItem>
                 <Box my={2}>
+                  {areFieldsFilled && <StyledTypo variant="body2">fill in all fields!</StyledTypo>}
                   <Button fullWidth variant="contained" color="primary" type="subbit" onClick={this.handleSubbmit}>
                     {signUpDisplay ? 'sign up' : 'sign in'}
                   </Button>
