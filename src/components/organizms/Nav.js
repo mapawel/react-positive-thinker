@@ -35,7 +35,6 @@ const useStyles = makeStyles((theme) => ({
     lineHeight: '30px',
     textAlign: 'center',
     backgroundColor: theme.palette.success.main,
-    // boxShadow: 0 5px 15px -3px ${({ theme }) => theme.color.darkshadow};
     color: theme.palette.text.primary,
   },
   appBar: {
@@ -66,6 +65,7 @@ const useStyles = makeStyles((theme) => ({
     whiteSpace: 'nowrap',
     border: 'none',
     boxShadow: '3px 0 12px -8px lightgrey',
+    overflow: 'hidden',
   },
   drawerOpen: {
     width: drawerWidth,
@@ -135,7 +135,7 @@ const Nav = ({ children, signOutFn }) => {
   };
 
   const handleDrawerClose = () => {
-    setOpen(false);
+    if (open) setOpen(false);
   };
 
   const smallScreen = useMediaQuery('(max-width:440px)');
@@ -190,7 +190,7 @@ const Nav = ({ children, signOutFn }) => {
               <ChevronLeftIcon />
             </IconButton>
           </div>
-          <List>
+          <List onClick={handleDrawerClose}>
             <NavListIconButton
               txt="wall"
               to={routes.home}
@@ -226,10 +226,10 @@ const Nav = ({ children, signOutFn }) => {
       </div>
       <Box className={classes.footer}>
         <Typography variant="caption">
-        &copy;
-        {' '}
-        <Href  href="https://github.com/mapawel">mapawel</Href>
-        , All rights reserved
+          &copy;
+          {' '}
+          <Href href="https://github.com/mapawel">mapawel</Href>
+          , All rights reserved
         </Typography>
       </Box>
     </>

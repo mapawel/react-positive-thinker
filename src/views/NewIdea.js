@@ -21,8 +21,13 @@ const useStyles = makeStyles({
   headTxt: {
     marginBottom: '20px',
   },
-  uploadBtn: {
+  uploadBtnBox: {
     alignSelf: 'flex-end',
+    width: '100%',
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
 });
 
@@ -60,9 +65,12 @@ const NewIdea = ({ addIdeaFn, history: { goBack } }) => {
                   Upload a nice image and comment it or just
                   write something motivating!
                 </Typography>
-                <Button className={classes.uploadBtn} variant="contained" color="secondary" component="span">
-                  Upload
-                </Button>
+                <Box className={classes.uploadBtnBox}>
+                  <Typography variant="caption" color="textSecondary">{image ? image.name : ' '}</Typography>
+                  <Button variant="contained" color={image ? 'secondary' : 'primary'} component="span">
+                    Upload
+                  </Button>
+                </Box>
               </label>
             </Box>
             <Formik
@@ -117,7 +125,7 @@ const NewIdea = ({ addIdeaFn, history: { goBack } }) => {
                     <Button
                       fullWidth
                       variant="contained"
-                      color="primary"
+                      color={(image || !errors.content) ? 'primary' : 'secondary'}
                       type="subbmit"
                       onClick={handleSubmit}
                       disabled={isSubmitting}

@@ -92,6 +92,10 @@ const IdeaCard = ({
   const nameInitial = authorName.slice(0, 1).toUpperCase();
   const likeCount = like.length;
   const isUserLike = like.includes(uid);
+  const mailWoDomain = authorMail.split('@')[0];
+  let displayMail;
+  if (mailWoDomain.length > 18) displayMail = `${mailWoDomain.slice(0, 16)}...`;
+  else displayMail = mailWoDomain;
 
   const toggleDispaear = () => {
     setDisapear((oldState) => (!oldState));
@@ -132,7 +136,7 @@ const IdeaCard = ({
             {nameInitial}
           </Avatar>
         )}
-        title={`${CapitalizeName} (${authorMail})`}
+        title={`${CapitalizeName} (${displayMail})`}
         subheader={moment(date.toDate()).calendar()}
         action={(
           <CardActions disableSpacing>
@@ -225,7 +229,7 @@ IdeaCard.propTypes = {
   authorMail: PropTypes.string.isRequired,
   id: PropTypes.string.isRequired,
   content: PropTypes.string.isRequired,
-  imageUrl: PropTypes.string.isRequired,
+  imageUrl: PropTypes.string,
   handleClickOpen: PropTypes.func.isRequired,
   addLikeFn: PropTypes.func.isRequired,
   removeLikeFn: PropTypes.func.isRequired,
@@ -235,6 +239,7 @@ IdeaCard.propTypes = {
 IdeaCard.defaultProps = {
   uid: null,
   like: [],
+  imageUrl: null,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(IdeaCard));
