@@ -2,7 +2,7 @@
 
 > :warning: One of my very early projects completed during my front-end and basic JavaScript learning. Since that time, I have gained a lot of skills, and today it would look completely different :see_no_evil: I leave the code in the repository as a trace of my learning process from 2020 for comparison with current projects.
 
-### Single Page App, Full Stack, Responsive Web Design.
+### React Single Page App, Full Stack, Responsive Web Design, Firebase
 The main goal of the project was to quickly create a fully functional (full stack) and ready to use application. To achieve this, I used the library of ready-made components (Material UI) and Firebase for app's back end. There was a need of Material UI customization with own styles. The attitude like this mede possible to achive the goal with not many working hours.
 
 All posts and comments are saved in the Firebase database. Photos are saved in Firebase Storage. User can display a wall view with all posts as well as own posts or added to favorites ones in different views. Comment are hidden by default and can be open in accordion style. Long comments are displayied as their short versions and can they be roll out on demand. Posts can collect hearts (likes) from other users. User can delete only his own posts.
